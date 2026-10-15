@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary">#FF6B35</color>
+    <color name="primary_variant">#E85A2B</color>
+    <color name="primary_container">#FFE5DC</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="on_primary_container">#3D1A0E</color>
+
+    <!-- Secondary Colors -->
+    <color name="secondary">#4A6FA5</color>
+    <color name="secondary_variant">#3A5A8A</color>
+    <color name="secondary_container">#DCE8FF</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="on_secondary_container">#1A2A4D</color>
+
+    <!-- Tertiary Colors -->
+    <color name="tertiary">#7A5C8A</color>
+    <color name="tertiary_variant">#634772</color>
+    <color name="tertiary_container">#F3DFFF</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="on_tertiary_container">#301A3F</color>
+
+    <!-- Error Colors -->
+    <color name="error">#B3261E</color>
+    <color name="error_container">#F9DEDC</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="on_error_container">#410E0B</color>
+
+    <!-- Background & Surface -->
+    <color name="background">#FEFBFF</color>
+    <color name="surface">#FEFBFF</color>
+    <color name="surface_variant">#E7E0EC</color>
+    <color name="surface_variant_dark">#D6CFDB</color>
+    <color name="on_background">#1D1B20</color>
+    <color name="on_surface">#1D1B20</color>
+    <color name="on_surface_variant">#49454F</color>
+
+    <!-- Outline -->
+    <color name="outline">#79747E</color>
+    <color name="outline_variant">#CAC4D0</color>
+
+    <!-- Tool Selection -->
+    <color name="tool_selected">#FF6B35</color>
+    <color name="tool_unselected">#79747E</color>
+
+    <!-- Brush Colors Preset -->
+    <color name="brush_black">#FF000000</color>
+    <color name="brush_white">#FFFFFFFF</color>
+    <color name="brush_red">#FFD32F2F</color>
+    <color name="brush_orange">#FFF57C00</color>
+    <color name="brush_yellow">#FFF9A825</color>
+    <color name="brush_green">#FF388E3C</color>
+    <color name="brush_teal">#FF00897B</color>
+    <color name="brush_blue">#FF1976D2</color>
+    <color name="brush_indigo">#FF3F51B5</color>
+    <color name="brush_purple">#FF7B1FA2</color>
+    <color name="brush_pink">#FFC2185B</color>
+    <color name="brush_brown">#FF6D4C41</color>
+    <color name="brush_grey">#FF757575</color>
+    <color name="brush_blue_grey">#FF546E7A</color>
+
+    <!-- Canvas -->
+    <color name="canvas_background">#FFFFFFFF</color>
+    <color name="grid_line">#E0E0E0</color>
+
+    <!-- Layer States -->
+    <color name="layer_active">#FFF3E0</color>
+    <color name="layer_inactive">#FAFAFA</color>
+    <color name="layer_locked">#E0E0E0</color>
+    <color name="layer_hidden">#F5F5F5</color>
+
+    <!-- Status -->
+    <color name="status_ready">#4CAF50</color>
+    <color name="status_drawing">#FF6B35</color>
+    <color name="status_saving">#2196F3</color>
+
+    <!-- Dividers -->
+    <color name="divider">#E0E0E0</color>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grinder</string>
+    <string name="ready">Ready</string>
+    <string name="drawing">Drawing...</string>
+    <string name="saving">Saving...</string>
+
+    <!-- Tools -->
+    <string name="tool_brush">Brush</string>
+    <string name="tool_eraser">Eraser</string>
+    <string name="tool_eyedropper">Eyedropper</string>
+    <string name="tool_select">Select</string>
+    <string name="tool_transform">Transform</string>
+    <string name="tool_fill">Fill</string>
+
+    <!-- Actions -->
+    <string name="new_file">New</string>
+    <string name="open_file">Open</string>
+    <string name="save_file">Save</string>
+    <string name="export">Export</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+
+    <!-- Layers -->
+    <string name="layers">Layers</string>
+    <string name="add_layer">Add Layer</string>
+    <string name="delete_layer">Delete Layer</string>
+    <string name="duplicate_layer">Duplicate Layer</string>
+    <string name="merge_down">Merge Down</string>
+    <string name="layer_opacity">Opacity</string>
+    <string name="layer_visible">Visible</string>
+    <string name="layer_locked">Locked</string>
+
+    <!-- Brush Properties -->
+    <string name="brush_size">Size</string>
+    <string name="brush_opacity">Opacity</string>
+    <string name="brush_hardness">Hardness</string>
+    <string name="brush_color">Color</string>
+    <string name="brush_blend_mode">Blend Mode</string>
+    <string name="brush_presets">Presets</string>
+
+    <!-- Blend Modes -->
+    <string name="blend_normal">Normal</string>
+    <string name="blend_multiply">Multiply</string>
+    <string name="blend_screen">Screen</string>
+    <string name="blend_overlay">Overlay</string>
+    <string name="blend_add">Add</string>
+    <string name="blend_subtract">Subtract</string>
+
+    <!-- Dialogs -->
+    <string name="confirm_delete_layer">Delete this layer?</string>
+    <string name="confirm_clear_canvas">Clear all strokes on this layer?</string>
+    <string name="confirm_discard_changes">Discard unsaved changes?</string>
+    <string name="save_as">Save As</string>
+    <string name="export_as">Export As</string>
+    <string name="file_name">File Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+
+    <!-- Toasts -->
+    <string name="layer_added">Layer added</string>
+    <string name="layer_deleted">Layer deleted</string>
+    <string name="saved_successfully">Saved successfully</string>
+    <string name="exported_successfully">Exported successfully</string>
+    <string name="error_saving">Error saving file</string>
+    <string name="error_loading">Error loading file</string>
+    <string name="error_exporting">Error exporting image</string>
+</resources>

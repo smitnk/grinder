@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/tool_brush"
+            android:icon="@drawable/ic_brush"
+            android:title="@string/tool_brush"
+            android:checked="true" />
+        <item
+            android:id="@+id/tool_eraser"
+            android:icon="@drawable/ic_eraser"
+            android:title="@string/tool_eraser" />
+        <item
+            android:id="@+id/tool_eyedropper"
+            android:icon="@drawable/ic_eyedropper"
+            android:title="@string/tool_eyedropper" />
+        <item
+            android:id="@+id/tool_select"
+            android:icon="@drawable/ic_select"
+            android:title="@string/tool_select" />
+        <item
+            android:id="@+id/tool_transform"
+            android:icon="@drawable/ic_transform"
+            android:title="@string/tool_transform" />
+        <item
+            android:id="@+id/tool_fill"
+            android:icon="@drawable/ic_fill"
+            android:title="@string/tool_fill" />
+    </group>
+</menu>
