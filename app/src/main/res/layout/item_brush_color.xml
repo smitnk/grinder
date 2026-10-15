@@ -14,11 +14,10 @@
         android:textColor="@color/on_surface"
         android:layout_marginBottom="8dp" />
 
-    <androidx.gridlayout.widget.GridLayout
+    <LinearLayout
         android:id="@+id/colorGrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="7"
-        android:rowCount="2"
-        android:alignmentMode="alignMargins" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal" />
 </LinearLayout>

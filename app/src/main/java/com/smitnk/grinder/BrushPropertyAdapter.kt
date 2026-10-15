@@ -1,13 +1,13 @@
 package com.smitnk.grinder
 
 import android.graphics.Color
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.color.MaterialColors
 import com.google.android.material.slider.Slider
 import com.smitnk.grinder.data.BlendMode
 
@@ -20,20 +20,13 @@ class BrushPropertyAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val brushColors = arrayOf(
-        Color.parseColor("#FF000000"), // Black
-        Color.parseColor("#FFFFFFFF"), // White
-        Color.parseColor("#FFD32F2F"), // Red
-        Color.parseColor("#FFF57C00"), // Orange
-        Color.parseColor("#FFF9A825"), // Yellow
-        Color.parseColor("#FF388E3C"), // Green
-        Color.parseColor("#FF00897B"), // Teal
-        Color.parseColor("#FF1976D2"), // Blue
-        Color.parseColor("#FF3F51B5"), // Indigo
-        Color.parseColor("#FF7B1FA2"), // Purple
-        Color.parseColor("#FFC2185B"), // Pink
-        Color.parseColor("#FF6D4C41"), // Brown
-        Color.parseColor("#FF757575"), // Grey
-        Color.parseColor("#FF546E7A")  // Blue Grey
+        Color.parseColor("#FF000000"), Color.parseColor("#FFFFFFFF"),
+        Color.parseColor("#FFD32F2F"), Color.parseColor("#FFF57C00"),
+        Color.parseColor("#FFF9A825"), Color.parseColor("#FF388E3C"),
+        Color.parseColor("#FF00897B"), Color.parseColor("#FF1976D2"),
+        Color.parseColor("#FF3F51B5"), Color.parseColor("#FF7B1FA2"),
+        Color.parseColor("#FFC2185B"), Color.parseColor("#FF6D4C41"),
+        Color.parseColor("#FF757575"), Color.parseColor("#FF546E7A")
     )
 
     companion object {
@@ -44,31 +37,16 @@ class BrushPropertyAdapter(
         const val TYPE_BLEND = 4
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return position
-    }
+    override fun getItemViewType(position: Int): Int = position
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            TYPE_COLOR -> ColorViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_brush_color, parent, false)
-            )
-            TYPE_SIZE -> SliderViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_brush_slider, parent, false),
-                "Size", 0.5f, 200f, 4f, onSizeChange
-            )
-            TYPE_OPACITY -> SliderViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_brush_slider, parent, false),
-                "Opacity", 0f, 1f, 1f, onOpacityChange
-            )
-            TYPE_HARDNESS -> SliderViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_brush_slider, parent, false),
-                "Hardness", 0f, 1f, 1f, onHardnessChange
-            )
-            TYPE_BLEND -> BlendModeViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_brush_blend, parent, false),
-                onBlendModeChange
-            )
+            TYPE_COLOR -> ColorViewHolder(inflater.inflate(R.layout.item_brush_color, parent, false))
+            TYPE_SIZE -> SliderViewHolder(inflater.inflate(R.layout.item_brush_slider, parent, false), "Size", 0.5f, 200f, 4f, onSizeChange)
+            TYPE_OPACITY -> SliderViewHolder(inflater.inflate(R.layout.item_brush_slider, parent, false), "Opacity", 0f, 1f, 1f, onOpacityChange)
+            TYPE_HARDNESS -> SliderViewHolder(inflater.inflate(R.layout.item_brush_slider, parent, false), "Hardness", 0f, 1f, 1f, onHardnessChange)
+            TYPE_BLEND -> BlendModeViewHolder(inflater.inflate(R.layout.item_brush_blend, parent, false), onBlendModeChange)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -84,25 +62,37 @@ class BrushPropertyAdapter(
     override fun getItemCount(): Int = 5
 
     inner class ColorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val colorGrid = view.findViewById<androidx.gridlayout.widget.GridLayout>(R.id.colorGrid)
+        private val colorGrid: LinearLayout = view.findViewById(R.id.colorGrid)
 
         fun bind(colors: Array<Int>) {
             colorGrid.removeAllViews()
-            colors.forEach { color ->
-                val colorView = View(itemView.context).apply {
-                    layoutParams = androidx.gridlayout.widget.GridLayout.LayoutParams().apply {
-                        width = 40
-                        height = 40
-                        setMargins(4, 4, 4, 4)
-                    }
-                    setBackgroundColor(color)
-                    setOnClickListener { onColorChange(color) }
-                    // Add border for white
-                    if (color == Color.WHITE) {
-                        setBackgroundResource(R.drawable.color_white_bg)
-                    }
+            // 2 rows of 7 colors
+            for (row in 0..1) {
+                val rowLayout = LinearLayout(itemView.context).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply { gravity = Gravity.CENTER_HORIZONTAL }
+                    orientation = LinearLayout.HORIZONTAL
                 }
-                colorGrid.addView(colorView)
+                for (col in 0..6) {
+                    val idx = row * 7 + col
+                    if (idx >= colors.size) break
+                    val color = colors[idx]
+                    val colorView = View(itemView.context).apply {
+                        layoutParams = LinearLayout.LayoutParams(38, 38).apply {
+                            setMargins(3, 3, 3, 3)
+                        }
+                        if (color == Color.WHITE) {
+                            setBackgroundResource(R.drawable.color_white_bg)
+                        } else {
+                            setBackgroundColor(color)
+                        }
+                        setOnClickListener { onColorChange(color) }
+                    }
+                    rowLayout.addView(colorView)
+                }
+                colorGrid.addView(rowLayout)
             }
         }
     }
@@ -143,17 +133,14 @@ class BrushPropertyAdapter(
         fun bind() {
             blendModeText.setOnClickListener {
                 val modes = BlendMode.values()
-                val currentIndex = modes.indexOfFirst { it == BlendMode.NORMAL }
-                val items = modes.map { it.name }
-                android.widget.ArrayAdapter(itemView.context, android.R.layout.select_dialog_item, items.toTypedArray()).also { adapter ->
-                    android.app.AlertDialog.Builder(itemView.context)
-                        .setTitle("Blend Mode")
-                        .setAdapter(adapter) { _, which ->
-                            onChange(modes[which])
-                            blendModeText.text = modes[which].name
-                        }
-                        .show()
-                }
+                val items = modes.map { it.name }.toTypedArray()
+                androidx.appcompat.app.AlertDialog.Builder(itemView.context)
+                    .setTitle("Blend Mode")
+                    .setItems(items) { _, which ->
+                        onChange(modes[which])
+                        blendModeText.text = modes[which].name
+                    }
+                    .show()
             }
             blendModeText.text = BlendMode.NORMAL.name
         }

@@ -1,14 +1,27 @@
 package com.smitnk.grinder.engine
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PointF
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.smitnk.grinder.data.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.smitnk.grinder.data.BlendMode
+import com.smitnk.grinder.data.CapStyle
+import com.smitnk.grinder.data.Frame
+import com.smitnk.grinder.data.GreasePencilData
+import com.smitnk.grinder.data.JoinStyle
+import com.smitnk.grinder.data.Layer
+import com.smitnk.grinder.data.Stroke
+import com.smitnk.grinder.data.StrokePoint
+import kotlin.math.min
 
 /**
  * Drawing Engine - Handles rendering and stroke management
@@ -394,20 +407,35 @@ class DrawingEngine(context: Context, attrs: AttributeSet) : View(context, attrs
             else -> Paint.Join.MITER
         }
 
-        // Apply blend mode
-        paint.blendMode = when (stroke.blendMode) {
-            BlendMode.NORMAL -> BlendModeCompat.SRC_OVER
-            BlendMode.ADD -> BlendModeCompat.PLUS
-            BlendMode.MULTIPLY -> BlendModeCompat.MULTIPLY
-            BlendMode.SCREEN -> BlendModeCompat.SCREEN
-            BlendMode.OVERLAY -> BlendModeCompat.OVERLAY
-            else -> BlendModeCompat.SRC_OVER
-        }
-
-        // Eraser uses clear mode
+        // Apply blend mode (API 29+ uses BlendMode, older uses PorterDuff via xfermode)
         if (stroke.color == Color.TRANSPARENT) {
-            paint.blendMode = BlendModeCompat.CLEAR
+            // Eraser
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                paint.blendMode = android.graphics.BlendMode.CLEAR
+            } else {
+                @Suppress("DEPRECATION")
+                paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+            }
             paint.color = Color.TRANSPARENT
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                paint.blendMode = when (stroke.blendMode) {
+                    BlendMode.ADD -> android.graphics.BlendMode.PLUS
+                    BlendMode.MULTIPLY -> android.graphics.BlendMode.MULTIPLY
+                    BlendMode.SCREEN -> android.graphics.BlendMode.SCREEN
+                    BlendMode.OVERLAY -> android.graphics.BlendMode.OVERLAY
+                    else -> android.graphics.BlendMode.SRC_OVER
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                paint.xfermode = when (stroke.blendMode) {
+                    BlendMode.ADD -> PorterDuffXfermode(PorterDuff.Mode.ADD)
+                    BlendMode.MULTIPLY -> PorterDuffXfermode(PorterDuff.Mode.MULTIPLY)
+                    BlendMode.SCREEN -> PorterDuffXfermode(PorterDuff.Mode.SCREEN)
+                    BlendMode.OVERLAY -> PorterDuffXfermode(PorterDuff.Mode.OVERLAY)
+                    else -> null
+                }
+            }
         }
 
         canvas.drawPath(path, paint)
@@ -440,7 +468,12 @@ class DrawingEngine(context: Context, attrs: AttributeSet) : View(context, attrs
         paint.color = currentColor
         paint.strokeWidth = currentThickness * canvasScale
         paint.alpha = (currentOpacity * 255).toInt()
-        paint.blendMode = BlendModeCompat.SRC_OVER
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            paint.blendMode = android.graphics.BlendMode.SRC_OVER
+        } else {
+            @Suppress("DEPRECATION")
+            paint.xfermode = null
+        }
 
         canvas.drawPath(path, paint)
         canvas.restore()
@@ -490,14 +523,4 @@ class DrawingEngine(context: Context, attrs: AttributeSet) : View(context, attrs
     private fun fillArea(x: Float, y: Float) {
         // Flood fill implementation
     }
-}
-
-// BlendMode compatibility for API < 29
-object BlendModeCompat {
-    const val SRC_OVER = 0
-    const val CLEAR = 1
-    const val PLUS = 2
-    const val MULTIPLY = 3
-    const val SCREEN = 4
-    const val OVERLAY = 5
 }

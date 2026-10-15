@@ -91,8 +91,8 @@ class LayerAdapter(
         val prevActive = activeLayerIndex
         activeLayerIndex = index
         if (prevActive != index) {
-            notifyItemChanged(prevActive)
-            notifyItemChanged(index)
+            if (prevActive in layers.indices) notifyItemChanged(prevActive)
+            if (index in layers.indices) notifyItemChanged(index)
         }
     }
 

@@ -8,27 +8,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.view.MenuItem
-import android.view.View
+import android.widget.ImageButton
 import android.widget.PopupMenu
-import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.slider.Slider
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
-import com.smitnk.grinder.data.*
+import com.smitnk.grinder.data.BlendMode
+import com.smitnk.grinder.data.Frame
+import com.smitnk.grinder.data.GreasePencilData
+import com.smitnk.grinder.data.Layer
 import com.smitnk.grinder.engine.DrawingEngine
-import kotlinx.coroutines.launch
-import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -58,9 +51,6 @@ class MainActivity : AppCompatActivity() {
         setupBrushPanel()
         setupLayerPanel()
         setupStatusBar()
-
-        // Add initial layer
-        drawingEngine.addLayer("Layer 1")
     }
 
     private fun setupDrawingEngine() {
@@ -81,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupToolBar() {
-        val toolBar = findViewById<com.google.android.material.navigation.NavigationView>(R.id.toolBar)
+        val toolBar = findViewById<NavigationView>(R.id.toolBar)
         toolBar.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.tool_brush -> {
@@ -164,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         )
         recycler.adapter = layerAdapter
 
-        findViewById<android.widget.ImageButton>(R.id.btnAddLayer).setOnClickListener {
+        findViewById<ImageButton>(R.id.btnAddLayer).setOnClickListener {
             addNewLayer()
         }
     }
@@ -320,6 +310,59 @@ class MainActivity : AppCompatActivity() {
         return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != RESULT_OK || data == null) return
+
+        when (requestCode) {
+            REQUEST_SAVE_FILE -> {
+                data.data?.let { uri ->
+                    saveToFile(uri)
+                }
+            }
+            REQUEST_OPEN_FILE -> {
+                data.data?.let { uri ->
+                    openFromFile(uri)
+                }
+            }
+        }
+    }
+
+    private fun saveToFile(uri: Uri) {
+        try {
+            contentResolver.openOutputStream(uri)?.use { stream ->
+                val json = kotlinx.serialization.json.Json {
+                    ignoreUnknownKeys = true
+                    encodeDefaults = true
+                }.encodeToString(GreasePencilData.serializer(), drawingEngine.greasePencilData)
+                stream.write(json.toByteArray())
+                updateStatus("Saved successfully")
+                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error saving: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openFromFile(uri: Uri) {
+        try {
+            contentResolver.openInputStream(uri)?.use { stream ->
+                val json = stream.bufferedReader().readText()
+                val loaded = kotlinx.serialization.json.Json {
+                    ignoreUnknownKeys = true
+                }.decodeFromString(GreasePencilData.serializer(), json)
+                drawingEngine.greasePencilData = loaded
+                layerAdapter.updateLayers(loaded.layers)
+                layerAdapter.updateActiveLayer(loaded.activeLayerIndex)
+                updateStatus("Loaded successfully")
+                Toast.makeText(this, "Loaded", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error loading: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     // ==================== Layer Operations ====================
 
     private fun addNewLayer() {
@@ -356,7 +399,7 @@ class MainActivity : AppCompatActivity() {
                 Frame(
                     frameNumber = frame.frameNumber,
                     strokes = frame.strokes.map { it.copy() }.toMutableList()
-                ).toMutableList()
+                )
             }.toMutableList(),
             opacity = sourceLayer.opacity,
             visible = sourceLayer.visible,

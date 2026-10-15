@@ -41,10 +41,6 @@
         <item name="colorOutline">@color/outline</item>
         <item name="colorOutlineVariant">@color/outline_variant</item>
 
-        <!-- Tool Selection Colors -->
-        <item name="colorToolSelected">@color/tool_selected</item>
-        <item name="colorToolUnselected">@color/tool_unselected</item>
-
         <!-- Status Bar -->
         <item name="android:statusBarColor">@color/surface</item>
         <item name="android:windowLightStatusBar">true</item>
@@ -56,18 +52,4 @@
         <!-- Window -->
         <item name="android:windowBackground">@color/background</item>
     </style>
-
-    <!-- Tool Icon Selector -->
-    <color name="selector_tool_icon">@color/selector_tool_icon</color>
-    <color name="selector_tool_text">@color/selector_tool_text</color>
-
-    <selector name="selector_tool_icon" xmlns:android="http://schemas.android.com/apk/res/android">
-        <item android:color="@color/tool_selected" android:state_checked="true" />
-        <item android:color="@color/tool_unselected" />
-    </selector>
-
-    <selector name="selector_tool_text" xmlns:android="http://schemas.android.com/apk/res/android">
-        <item android:color="@color/tool_selected" android:state_checked="true" />
-        <item android:color="@color/tool_unselected" />
-    </selector>
 </resources>
